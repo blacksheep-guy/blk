@@ -22,10 +22,11 @@ Copy this entire file to another LLM/dev. Goal: implement real authentication in
 
 ```
 middleware.ts          ← ONLY backend file — edit authenticate() here
-index.html             ← login page
-js/app.js              ← POST /api/login client
-inbox.html             ← post-login stub
-vercel.json            ← rewrites /inbox → inbox.html
+public/index.html      ← login page
+public/js/app.js       ← POST /api/login client
+public/inbox.html      ← post-login stub
+public/assets/         ← logo, background, favicon
+vercel.json            ← outputDirectory: public + /inbox rewrites
 .env.local             ← secrets (not committed)
 .env.example           ← template
 ```

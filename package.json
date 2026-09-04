@@ -5,8 +5,8 @@
   "description": "bektel.com webmail login — Vercel Edge middleware backend",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'Static site + Edge middleware — no compile step'",
-    "start": "npx serve ."
+    "build": "echo 'Static files are in /public'",
+    "start": "npx serve public"
   },
   "dependencies": {
     "@vercel/edge": "^1.2.1"
