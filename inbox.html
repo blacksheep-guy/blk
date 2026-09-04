@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox — bektel.com webmail</title>
+    <link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .inbox {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+      .inbox-card {
+        width: min(100%, 420px);
+        background: var(--panel);
+        border-radius: 10px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+      .inbox-card h1 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .inbox-card p {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+      .inbox-card .email {
+        color: var(--text);
+        font-weight: 500;
+      }
+      .logout-btn {
+        border: 1px solid var(--blue-border);
+        border-radius: var(--radius);
+        background: var(--blue);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="inbox">
+        <div class="inbox-card">
+          <img class="logo" src="/assets/logo.png" alt="BEK" width="100" />
+          <h1>Signed in</h1>
+          <p>
+            Welcome, <span class="email" id="user-email">…</span>
+          </p>
+          <button type="button" class="logout-btn" id="logout-btn">
+            LOGOUT
+          </button>
+        </div>
+      </main>
+      <footer class="footer"><span>bektel.com webmail</span></footer>
+    </div>
+    <script>
+      (async () => {
+        const emailEl = document.getElementById("user-email");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        try {
+          const res = await fetch("/api/session", { credentials: "same-origin" });
+          const data = await res.json();
+          if (!res.ok || !data.authenticated) {
+            window.location.replace("/");
+            return;
+          }
+          emailEl.textContent = data.email;
+        } catch {
+          window.location.replace("/");
+          return;
+        }
+
+        logoutBtn.addEventListener("click", async () => {
+          await fetch("/api/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+          window.location.replace("/");
+        });
+      })();
+    </script>
+  </body>
+</html>

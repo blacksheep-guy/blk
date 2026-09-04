@@ -1,0 +1,245 @@
+:root {
+  --blue: #2f7fd1;
+  --blue-border: #5aa3e8;
+  --panel: rgba(8, 10, 14, 0.55);
+  --field: rgba(28, 30, 36, 0.92);
+  --field-border: rgba(160, 168, 180, 0.55);
+  --field-focus: rgba(90, 163, 232, 0.85);
+  --icon-bg: #3a3d45;
+  --text: #e8eaed;
+  --muted: #9aa0a8;
+  --error: #ff6b6b;
+  --footer-bar: rgba(0, 0, 0, 0.45);
+  --radius: 6px;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: #0a0c10 url("/assets/background.jpg") center / cover no-repeat fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 56px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-box {
+  width: min(100%, 360px);
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 28px 28px 26px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  backdrop-filter: blur(2px);
+}
+
+.logo {
+  display: block;
+  width: 118px;
+  height: auto;
+  margin: 4px auto 18px;
+  object-fit: contain;
+}
+
+.field {
+  display: flex;
+  align-items: stretch;
+  background: var(--field);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.field:focus-within {
+  border-color: var(--field-focus);
+}
+
+.field-icon {
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  background: var(--icon-bg);
+  color: #f2f3f5;
+}
+
+.field-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  padding: 12px 12px;
+  font-family: inherit;
+}
+
+.field input::placeholder {
+  color: var(--muted);
+}
+
+.field-affix {
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  color: #4ade80;
+}
+
+.field-affix svg {
+  width: 18px;
+  height: 18px;
+}
+
+.error {
+  color: var(--error);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  min-height: 0;
+}
+
+.error[hidden] {
+  display: none;
+}
+
+.login-btn {
+  margin-top: 4px;
+  width: 100%;
+  border: 1px solid var(--blue-border);
+  border-radius: var(--radius);
+  background: var(--blue);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  position: relative;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.login-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.login-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.login-btn:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.login-btn.is-loading .btn-label {
+  opacity: 0;
+}
+
+.login-btn.is-loading .btn-spinner {
+  opacity: 1;
+}
+
+.btn-spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  background: var(--footer-bar);
+  padding: 8px 14px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    width: min(100%, 320px);
+    padding: 24px 20px 22px;
+  }
+
+  .logo {
+    width: 108px;
+    margin-bottom: 14px;
+  }
+
+  .field-icon {
+    flex-basis: 40px;
+  }
+}
+
+@media (min-width: 900px) {
+  .login-box {
+    width: 380px;
+    padding: 32px 32px 28px;
+  }
+
+  .logo {
+    width: 132px;
+    margin-bottom: 22px;
+  }
+}

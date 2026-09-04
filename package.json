@@ -1,0 +1,18 @@
+{
+  "name": "bektel-webmail",
+  "version": "1.0.0",
+  "private": true,
+  "description": "bektel.com webmail login — Vercel Edge middleware backend",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site + Edge middleware — no compile step'",
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "@vercel/edge": "^1.2.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vercel": "^39.1.0"
+  }
+}
