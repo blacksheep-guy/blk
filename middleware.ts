@@ -142,28 +142,75 @@ async function handleSession(request: Request): Promise<Response> {
 }
 
 /**
- * Plug in your real auth here (IMAP, LDAP, SSO, internal API, etc.).
- * Stub accepts any non-empty credentials — replace before production.
+ * Calls AUTH_URL with { email, password }.
+ * Optional AUTH_BEARER for Authorization header (e.g. Supabase anon key).
  */
 async function authenticate(
   email: string,
   password: string
 ): Promise<AuthResult> {
-  // --- BACKEND INTEGRATION POINT ---
-  // const res = await fetch(process.env.AUTH_URL!, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ email, password }),
-  // });
-  // if (!res.ok) return { ok: false, error: "Invalid email or password." };
-  // const data = await res.json();
-  // return { ok: true, userId: data.id, email: data.email };
+  const authUrl = process.env.AUTH_URL;
+  if (!authUrl) {
+    return { ok: false, error: "Auth service is not configured." };
+  }
 
   if (!password) {
     return { ok: false, error: "Invalid email or password." };
   }
 
-  return { ok: true, userId: email, email };
+  try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+
+    const bearer = process.env.AUTH_BEARER;
+    if (bearer) {
+      headers.Authorization = `Bearer ${bearer}`;
+    }
+
+    const res = await fetch(authUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ email, password }),
+    });
+
+    let data: Record<string, unknown> = {};
+    try {
+      data = (await res.json()) as Record<string, unknown>;
+    } catch {
+      data = {};
+    }
+
+    if (!res.ok) {
+      const msg =
+        (typeof data.error === "string" && data.error) ||
+        (typeof data.message === "string" && data.message) ||
+        "Invalid email or password.";
+      return { ok: false, error: msg };
+    }
+
+    // Treat explicit failure flags from upstream as auth failure
+    if (data.ok === false || data.success === false) {
+      const msg =
+        (typeof data.error === "string" && data.error) ||
+        (typeof data.message === "string" && data.message) ||
+        "Invalid email or password.";
+      return { ok: false, error: msg };
+    }
+
+    const userId = String(
+      data.userId ?? data.id ?? data.user_id ?? email
+    );
+    const canonicalEmail = String(data.email ?? email);
+
+    return { ok: true, userId, email: canonicalEmail };
+  } catch {
+    return {
+      ok: false,
+      error: "Unable to reach auth service. Please try again.",
+    };
+  }
 }
 
 async function createSessionToken(
